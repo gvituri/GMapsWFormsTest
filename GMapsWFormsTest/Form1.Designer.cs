@@ -1,4 +1,7 @@
-﻿using GMap.NET.MapProviders;
+﻿using GMap.NET;
+using GMap.NET.MapProviders;
+using GMap.NET.WindowsForms;
+using GMap.NET.WindowsForms.Markers;
 
 namespace GMapsWFormsTest {
     partial class Form1 {
@@ -57,7 +60,7 @@ namespace GMapsWFormsTest {
 
             this.gMapControl1.DragButton = MouseButtons.Left;
             this.gMapControl1.MapProvider = GMapProviders.GoogleMap;
-            this.gMapControl1.Position = new GMap.NET.PointLatLng(0,0);
+            this.gMapControl1.Position = new GMap.NET.PointLatLng(-21.204183246533017, -50.42680507360631);
             this.gMapControl1.MinZoom = 5;
             this.gMapControl1.MaxZoom = 100;
             this.gMapControl1.Zoom = 10;
@@ -72,6 +75,40 @@ namespace GMapsWFormsTest {
             this.Text = "Form1";
             this.ResumeLayout(false);
 
+            //Create the point
+            PointLatLng point = new PointLatLng(-21.204183246533017, -50.42680507360631);
+            GMapMarker marker = new GMarkerGoogle(point, GMarkerGoogleType.green_dot);
+            marker.Tag = marker.Position;
+
+            PointLatLng point1 = new PointLatLng(-21.19302450702431, -50.446944255982864);
+            GMapMarker marker1 = new GMarkerGoogle(point1, GMarkerGoogleType.green_dot);
+            marker1.Tag = marker1.Position;
+
+            PointLatLng point2 = new PointLatLng(-21.218790557607992, -50.43509962139646);
+            GMapMarker marker2 = new GMarkerGoogle(point2, GMarkerGoogleType.green_dot);
+            marker2.Tag = marker2.Position;
+
+            //Create an overlay
+            GMapOverlay markersOverlay = new GMapOverlay("Markers");
+
+            //Add point mark to overlay
+            markersOverlay.Markers.Add(marker);
+            markersOverlay.Markers.Add(marker1);
+            markersOverlay.Markers.Add(marker2);
+
+            //Cover map with overlay
+            this.gMapControl1.Overlays.Add(markersOverlay);
+            gMapControl1.OnMarkerClick += new MarkerClick(gMapControl1_OnMarkerClick);
+        }
+
+        private void gMapControl1_OnMarkerClick(GMapMarker item, MouseEventArgs e) {
+            ContextMenuStrip cm = new ContextMenuStrip();
+            cm.Items.Add("Detalhes do cliente");
+            cm.Items.Add("Itens Pendentes");
+            cm.Items.Add("Entregas Pendentes");
+            cm.Items.Add("Rota");
+
+            cm.Show(PointToScreen(e.Location));
         }
 
         #endregion
